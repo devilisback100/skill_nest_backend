@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify
+import flask
+from flask_cors import CORS
 from bson import ObjectId
 from User_data import (
     check_usn_password, get_soft_skills, get_tech_skills, get_points,
@@ -9,6 +11,7 @@ from User_data import (
 )
 
 app = Flask(__name__)
+CORS(app)
 
 # Helper function to convert ObjectId to string for JSON serialization
 
