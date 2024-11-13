@@ -1,6 +1,6 @@
 from pymongo import MongoClient
-
-
+import logging
+logging.basicConfig(level=logging.DEBUG)
 # client = MongoClient(
 #     'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/',
 # )
