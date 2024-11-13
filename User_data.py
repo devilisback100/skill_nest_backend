@@ -64,18 +64,12 @@ def get_profile_photo(usn):
 # Function 7: Get all data for a specific user
 
 def get_all_users_data():
-    try:
-        # Use find() to retrieve all documents in the collection and exclude '_id'
-        users = list(users_collection.find({}, {"_id": 0}))
+    users = list(users_collection.find({}, {"_id": 0}))
+    if users:
+        return users
+    else:
+        return {"error": "No users found in the collection"}
 
-        # Check if users data is not empty
-        if users:
-            return users
-        else:
-            return {"error": "No users found in the collection"}
-    except PyMongoError as e:
-        # Handle any MongoDB errors
-        return {"error": "Database error occurred", "details": str(e)}
 
 
 # Function 8: Update specific fields (email, soft skills, tech skills, points, etc.)
