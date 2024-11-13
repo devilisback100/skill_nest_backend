@@ -6,7 +6,9 @@ from pymongo import MongoClient
 # )
 client = MongoClient(
     'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/<skill_nest>?retryWrites=true&w=majority',
-    ssl=True
+    ssl=True,
+    ssl_cert_reqs=False,  # For testing, this bypasses cert verification
+    tls=True
 )
 
 db = client['skill_nest']
