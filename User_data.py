@@ -1,8 +1,10 @@
 from pymongo import MongoClient
 
-# Connect to MongoDB
+
 client = MongoClient(
-    'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/skill_nest?retryWrites=true&w=majority')
+    'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/',
+)
+
 db = client['skill_nest']
 users_collection = db['Users']
 
@@ -61,14 +63,19 @@ def get_profile_photo(usn):
 
 # Function 7: Get all data for a specific user
 
+def get_all_users_data():
+    try:
+        # Use find() to retrieve all documents in the collection and exclude '_id'
+        users = list(users_collection.find({}, {"_id": 0}))
 
-def get_all_user_data(usn):
-    user = users_collection.find_one(
-        {"USN": usn}, {"_id": 0})
-    if user:
-        return user
-    else:
-        return {"error": "User not found"}
+        # Check if users data is not empty
+        if users:
+            return users
+        else:
+            return {"error": "No users found in the collection"}
+    except PyMongoError as e:
+        # Handle any MongoDB errors
+        return {"error": "Database error occurred", "details": str(e)}
 
 
 # Function 8: Update specific fields (email, soft skills, tech skills, points, etc.)
@@ -157,4 +164,5 @@ def get_all_users_prev_month_points():
         user_prev_month_points.append({"name": user.get(
             "name"), "prev_month_points": user.get("prev_month_points", "")})
     return user_prev_month_points
+
 
