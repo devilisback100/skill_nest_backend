@@ -1,8 +1,12 @@
 from pymongo import MongoClient
 
 
+# client = MongoClient(
+#     'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/',
+# )
 client = MongoClient(
-    'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/',
+    'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/<skill_nest>?retryWrites=true&w=majority',
+    ssl=True
 )
 
 db = client['skill_nest']
