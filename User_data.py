@@ -1,16 +1,14 @@
-from pymongo import MongoClient
-import logging
-logging.basicConfig(level=logging.DEBUG)
-# client = MongoClient(
-#     'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/',
-# )
-client = MongoClient(
-    'mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/<skill_nest>?retryWrites=true&w=majority',
-    ssl=True,
-    ssl_cert_reqs=False,  # For testing, this bypasses cert verification
-    tls=True
-)
-
+from pymongo.server_api import ServerApi
+from pymongo.mongo_client import MongoClient
+uri = "mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 db = client['skill_nest']
 users_collection = db['Users']
 
