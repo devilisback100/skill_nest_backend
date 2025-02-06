@@ -1,5 +1,7 @@
 from pymongo.server_api import ServerApi
 from pymongo.mongo_client import MongoClient
+import base64
+
 uri = "mongodb+srv://Suresh_10001:Suresh1001databaseAcess@cluster0.7yxg4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
@@ -61,9 +63,8 @@ def get_projects(usn):
 
 # Function 6: Get specific data - Profile Photo
 def get_profile_photo(usn):
-    user = users_collection.find_one(
-        {"USN": usn}, {"profile_photo": 1, "_id": 0})
-    return user.get("profile_photo", "")
+    user = users_collection.find_one({"USN": usn}, {"profile_photo": 1, "_id": 0})
+    return user.get("profile_photo", b'')
 
 # Function 7: Get all data for a specific user
 
@@ -162,5 +163,17 @@ def get_all_users_prev_month_points():
         user_prev_month_points.append({"name": user.get(
             "name"), "prev_month_points": user.get("prev_month_points", "")})
     return user_prev_month_points
+
+# Function 12: Add a new project
+def add_project(usn, password, project_data):
+    result = check_usn_password(usn, password)
+    if result["status"] == "success":
+        users_collection.update_one(
+            {"USN": usn},
+            {"$push": {"Projects": project_data}}
+        )
+        return "Project added successfully."
+    else:
+        return result["message"]
 
 

@@ -7,8 +7,9 @@ from User_data import (
     get_projects, get_profile_photo, get_all_users_data, update_email,
     update_soft_skills, update_tech_skills, update_points,
     update_prev_month_points, update_profile_photo, add_new_user,
-    get_all_users_points, get_all_users_prev_month_points
+    get_all_users_points, get_all_users_prev_month_points, add_project
 )
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -71,7 +72,7 @@ def get_projects_route():
     data = request.get_json()
     usn = data['usn']
     result = get_projects(usn)
-    return jsonify({"status": "success", "data": convert_objectid(result)})
+    return jsonify({"status": "success", "data": [convert_objectid(project) for project in result]})
 
 
 @app.route('/get_profile_photo', methods=['POST'])
@@ -158,6 +159,25 @@ def get_all_users_points_route():
 def get_all_users_prev_month_points_route():
     result = get_all_users_prev_month_points()
     return jsonify({"status": "success", "data": [convert_objectid(user) for user in result]})
+
+
+@app.route('/add_project', methods=['POST'])
+def add_project_route():
+    data = request.get_json()
+    usn = data['usn']
+    password = data['password']
+    project_data = {
+        "title": data['title'],
+        "description": data['description'],
+        "live_url": data['live_url'],
+        "github_url": data['github_url'],
+        "skills_needed": data['skills_needed'],
+        "team_project": data['team_project']
+    }
+    if data['team_project']:
+        project_data["team_members"] = data['team_members']
+    result = add_project(usn, password, project_data)
+    return jsonify({"status": "success", "message": result})
 
 
 if __name__ == '_main_':
