@@ -12,6 +12,7 @@ except Exception as e:
 db = client['skill_nest']
 users_collection = db['Users']
 
+
 def check_usn_password(usn, password):
     user = users_collection.find_one({"USN": usn})
     if user:
@@ -22,10 +23,12 @@ def check_usn_password(usn, password):
     else:
         return {"status": "error", "message": "USN not found"}
 
+
 def get_soft_skills(usn):
     user = users_collection.find_one(
         {"USN": usn}, {"Soft-skills": 1, "_id": 0})
     return user.get("Soft-skills", [])
+
 
 def get_tech_skills(usn):
     user = users_collection.find_one(
@@ -37,17 +40,22 @@ def get_tech_skills(usn):
         "DSA": ""
     })
 
+
 def get_points(usn):
     user = users_collection.find_one({"USN": usn}, {"points": 1, "_id": 0})
     return user.get("points", "")
+
 
 def get_projects(usn):
     user = users_collection.find_one({"USN": usn}, {"Projects": 1, "_id": 0})
     return user.get("Projects", [])
 
+
 def get_profile_photo(usn):
-    user = users_collection.find_one({"USN": usn}, {"profile_photo": 1, "_id": 0})
+    user = users_collection.find_one(
+        {"USN": usn}, {"profile_photo": 1, "_id": 0})
     return user.get("profile_photo", b'')
+
 
 def get_all_users_data():
     users = list(users_collection.find({}, {"_id": 0}))
@@ -55,6 +63,7 @@ def get_all_users_data():
         return users
     else:
         return {"error": "No users found in the collection"}
+
 
 def update_user_field(usn, password, field_name, new_value):
     result = check_usn_password(usn, password)
@@ -67,23 +76,34 @@ def update_user_field(usn, password, field_name, new_value):
     else:
         return result["message"]
 
+
 def update_email(usn, password, new_email):
     return update_user_field(usn, password, "email", new_email)
+
 
 def update_soft_skills(usn, password, new_soft_skills):
     return update_user_field(usn, password, "Soft-skills", new_soft_skills)
 
+
 def update_tech_skills(usn, password, new_tech_skills):
     return update_user_field(usn, password, "Tech-skills", new_tech_skills)
+
 
 def update_points(usn, password, new_points):
     return update_user_field(usn, password, "points", new_points)
 
+
 def update_prev_month_points(usn, password, new_prev_month_points):
     return update_user_field(usn, password, "prev_month_points", new_prev_month_points)
 
+
 def update_profile_photo(usn, password, new_profile_photo):
     return update_user_field(usn, password, "profile_photo", new_profile_photo)
+
+
+def update_social_profiles(usn, password, new_social_profiles):
+    return update_user_field(usn, password, "Social_profiles", new_social_profiles)
+
 
 def add_new_user(current_usn, current_password, new_user_data):
     result = check_usn_password(current_usn, current_password)
@@ -96,6 +116,7 @@ def add_new_user(current_usn, current_password, new_user_data):
     else:
         return result["message"]
 
+
 def get_all_users_points():
     users = users_collection.find({}, {"name": 1, "points": 1, "_id": 0})
     user_points = []
@@ -103,6 +124,7 @@ def get_all_users_points():
         user_points.append(
             {"name": user.get("name"), "points": user.get("points", "")})
     return user_points
+
 
 def get_all_users_prev_month_points():
     users = users_collection.find(
@@ -112,6 +134,7 @@ def get_all_users_prev_month_points():
         user_prev_month_points.append({"name": user.get(
             "name"), "prev_month_points": user.get("prev_month_points", "")})
     return user_prev_month_points
+
 
 def add_project(usn, password, project_data):
     result = check_usn_password(usn, password)
@@ -125,3 +148,11 @@ def add_project(usn, password, project_data):
         return result["message"]
 
 
+def update_password(usn, old_password, new_password):
+    user = users_collection.find_one({"USN": usn})
+    if user and user.get("password") == old_password:
+        users_collection.update_one(
+            {"USN": usn}, {"$set": {"password": new_password}})
+        return "Password updated successfully."
+    else:
+        return "Incorrect current password."
